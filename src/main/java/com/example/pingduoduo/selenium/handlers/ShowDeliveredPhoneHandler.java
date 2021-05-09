@@ -54,9 +54,9 @@ public class ShowDeliveredPhoneHandler extends GenericSeleniumHandler {
 
                 // 开始点击显示手机号
                 for (int i = 0; i < elements.size(); i++) {
-                    System.out.print("第" + i + "行   ");
                     WebElement element = elements.get(i);
                     sleepSeconds(3, 5);
+                    final int rowNum = i;
                     retry(5, 5000, retryContext1 -> {
                         List<WebElement> tdList = element.findElements(By.tagName("td"));
                         if (tdList.size() > 3) {
@@ -71,7 +71,7 @@ public class ShowDeliveredPhoneHandler extends GenericSeleniumHandler {
                                 }
                                 username = td.findElement(By.xpath("div/div")).getText();
                             }
-                            log.info("获取到: " + username);
+                            log.info("获取到: 第" + rowNum + "行  " + username);
                             // 只有一个*的话,就触发点击
                             if (!username.equals("**") && username.contains("*")) {
                                 throw new RuntimeException("重试..." + username);
