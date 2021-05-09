@@ -63,7 +63,7 @@ public class ShowDeliveredPhoneHandler extends GenericSeleniumHandler {
                             WebElement td = tdList.get(3);
                             String username = td.findElement(By.xpath("div/div")).getText();
                             if (!username.equals("**")) { // ** 不触发点击
-                                td.findElement(By.cssSelector("i[data-testid='beast-core-icon-lock']")).click();
+                                waitUtil(driver -> td.findElement(By.cssSelector("i[data-testid='beast-core-icon-lock']"))).click();
                                 try {
                                     Thread.sleep(3000);
                                 } catch (Exception e) {
@@ -94,8 +94,6 @@ public class ShowDeliveredPhoneHandler extends GenericSeleniumHandler {
                             map.put("快递单号", StringUtils.replace(tdList.get(14).findElement(By.xpath("span")).getText(), "物流信息", ""));
                             map.put("备注", tdList.get(15).getText());
                             dataList.add(map);
-//                                System.out.println("");
-
                         }
                         return null;
                     });
