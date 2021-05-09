@@ -18,19 +18,18 @@ public class HandlerChain {
     }
 
     public void doHandler(WebDriver driver) {
-        log.info("--------------- handler start ---------------");
         if (index == handlers.size()) {
             return;
         }
         Handler next = handlers.get(index);
         index++;
         try {
+            log.info("handler:: " + next.getClass().getName());
             next.doHandler(driver, this);
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
-        }finally {
+        } finally {
             driver.quit();
         }
-        log.info("--------------- handler end ---------------");
     }
 }
