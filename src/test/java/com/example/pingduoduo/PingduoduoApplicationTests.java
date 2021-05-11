@@ -1,13 +1,13 @@
 package com.example.pingduoduo;
 
+import com.example.pingduoduo.selenium.CustomerInfoEmulator;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class PingduoduoApplicationTests {
+public class PingduoduoApplicationTests {
 
     @Test
-    void contextLoads() {
+    public void manualExport() {
+        new CustomerInfoEmulator().simulation();
     }
 
 }

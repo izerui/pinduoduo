@@ -29,7 +29,7 @@ public class HandlerChain {
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
         } finally {
-            driver.quit();
+//            driver.quit();
         }
     }
 }

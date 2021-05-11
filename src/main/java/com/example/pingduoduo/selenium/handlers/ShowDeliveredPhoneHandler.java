@@ -45,7 +45,7 @@ public class ShowDeliveredPhoneHandler extends GenericSeleniumHandler {
             // 查找未显示手机号的按钮
             WebElement tbody = waitUtil(driver -> driver.findElement(By.cssSelector("tbody[data-testid='beast-core-table-middle-tbody']")));
             retry(5, 5000, (retryContext) -> {
-                List<WebElement> elements = tbody.findElements(By.tagName("tr"));
+                List<WebElement> elements = waitUtil(driver -> tbody.findElements(By.tagName("tr")));
                 if (elements == null || elements.isEmpty()) {
                     throw new RuntimeException("没有数据");
                 }

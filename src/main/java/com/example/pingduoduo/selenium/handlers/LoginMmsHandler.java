@@ -4,6 +4,7 @@ import com.example.pingduoduo.selenium.GenericSeleniumHandler;
 import com.example.pingduoduo.selenium.HandlerChain;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -28,8 +29,17 @@ public class LoginMmsHandler extends GenericSeleniumHandler {
         webDriver.findElement(By.id("usernameId")).sendKeys(userPass.get(0));
         webDriver.findElement(By.id("passwordId")).sendKeys(userPass.get(1));
 
-        sleepSeconds(0,3);
+        sleepSeconds(0, 3);
         // 提交登录
         webDriver.findElement(By.tagName("button")).click();
+
+        try {
+            WebElement webElement = waitUtil(driver -> driver.findElement(By.cssSelector("div[data-testid='beast-core-input-suffix']")));
+            webElement.findElement(By.xpath("div/a/span")).click();
+            Thread.sleep(60000);
+        } catch (Exception e) {
+            ;
+        }
+
     }
 }

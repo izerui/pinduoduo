@@ -10,7 +10,7 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
-public class PingduoduoApplication implements WebMvcConfigurer, CommandLineRunner {
+public class PingduoduoApplication implements WebMvcConfigurer {
 
 
     @Override
@@ -27,8 +27,4 @@ public class PingduoduoApplication implements WebMvcConfigurer, CommandLineRunne
         SpringApplication.run(PingduoduoApplication.class, args);
     }
 
-    @Override
-    public void run(String... args) throws Exception {
-        new CustomerInfoEmulator().simulation();
-    }
 }
