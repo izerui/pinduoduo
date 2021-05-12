@@ -43,9 +43,9 @@ public class ShowDeliveredPhoneHandler extends GenericSeleniumHandler {
         while (true) {
 
             // 查找未显示手机号的按钮
-            WebElement tbody = waitUtil(driver -> driver.findElement(By.cssSelector("tbody[data-testid='beast-core-table-middle-tbody']")));
-            retry(5, 5000, (retryContext) -> {
-                List<WebElement> elements = waitUtil(driver -> tbody.findElements(By.tagName("tr")));
+            WebElement tbody = waitUtil(() -> webDriver.findElement(By.cssSelector("tbody[data-testid='beast-core-table-middle-tbody']")));
+            retry(5, 5000, () -> {
+                List<WebElement> elements = waitUtil(() -> tbody.findElements(By.tagName("tr")));
                 if (elements == null || elements.isEmpty()) {
                     throw new RuntimeException("没有数据");
                 }
@@ -57,18 +57,14 @@ public class ShowDeliveredPhoneHandler extends GenericSeleniumHandler {
                     WebElement element = elements.get(i);
                     sleepSeconds(3, 5);
                     final int rowNum = i + 1;
-                    retry(5, 5000, retryContext1 -> {
+                    retry(5, 5000, () -> {
                         List<WebElement> tdList = element.findElements(By.tagName("td"));
                         if (tdList.size() > 3) {
                             WebElement td = tdList.get(3);
                             String username = td.findElement(By.xpath("div/div")).getText();
                             if (!username.equals("**")) { // ** 不触发点击
-                                waitUtil(driver -> td.findElement(By.cssSelector("i[data-testid='beast-core-icon-lock']"))).click();
-                                try {
-                                    Thread.sleep(3000);
-                                } catch (Exception e) {
-                                    ;
-                                }
+                                waitUtil(() -> td.findElement(By.cssSelector("i[data-testid='beast-core-icon-lock']"))).click();
+                                Thread.sleep(3000);
                                 username = td.findElement(By.xpath("div/div")).getText();
                             }
                             log.info("获取到: 第" + rowNum + "行  " + username);
@@ -95,7 +91,6 @@ public class ShowDeliveredPhoneHandler extends GenericSeleniumHandler {
                             map.put("备注", tdList.get(15).getText());
                             dataList.add(map);
                         }
-                        return null;
                     });
 
                 }
@@ -105,14 +100,13 @@ public class ShowDeliveredPhoneHandler extends GenericSeleniumHandler {
                 SXSSFWorkbook workbook = export.writeBook();
                 workbook.write(new FileOutputStream("output/" + DateTime.now().toString("yyyy-MM-dd-HH-mm-ss") + ".xlsx"));
                 workbook.close();
-                return null;
             });
 
             sleepSeconds(1, 3);
 
             // 开始翻页
-            WebElement pageNext = waitUtil(driver -> driver.findElement(By.cssSelector("li[data-testid='beast-core-pagination-next']")));
-            if (pageNext != null && pageNext.getAttribute("class").contains("disabled")) {
+            WebElement pageNext = webDriver.findElement(By.cssSelector("li[data-testid='beast-core-pagination-next']"));
+            if (pageNext == null || pageNext.getAttribute("class").contains("disabled")) {
                 break;
             }
             pageNext.click();

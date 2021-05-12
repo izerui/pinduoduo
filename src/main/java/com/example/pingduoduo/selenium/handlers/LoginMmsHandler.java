@@ -20,7 +20,7 @@ public class LoginMmsHandler extends GenericSeleniumHandler {
         webDriver.get("https://mms.pinduoduo.com/login");
 
         // 切换到账户登录
-        waitUtil(driver -> driver.findElement(By.cssSelector("div[class='tab-item last-item']"))).click();
+        waitUtil(() -> webDriver.findElement(By.cssSelector("div[class='tab-item last-item']"))).click();
 
         // 读取用户名密码
         List<String> userPass = Files.readAllLines(Paths.get("passwd"));
@@ -34,7 +34,7 @@ public class LoginMmsHandler extends GenericSeleniumHandler {
         webDriver.findElement(By.tagName("button")).click();
 
         try {
-            WebElement webElement = waitUtil(driver -> driver.findElement(By.cssSelector("div[data-testid='beast-core-input-suffix']")));
+            WebElement webElement = waitUtil(() -> webDriver.findElement(By.cssSelector("div[data-testid='beast-core-input-suffix']")));
             webElement.findElement(By.xpath("div/a/span")).click();
             Thread.sleep(60000);
         } catch (Exception e) {
