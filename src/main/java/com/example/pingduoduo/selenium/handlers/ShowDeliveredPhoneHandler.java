@@ -22,9 +22,9 @@ import java.util.List;
 @Slf4j
 public class ShowDeliveredPhoneHandler extends GenericSeleniumHandler {
     @Override
-    protected void doHandlerInternal(WebDriver webDriver, HandlerChain handlerChain) throws Exception {
+    protected void doHandlerInternal(WebDriver driver, HandlerChain handlerChain) throws Exception {
         sleepSeconds(1, 3);
-        webDriver.get("https://mms.pinduoduo.com/print/delivered-order");
+        driver.get("https://mms.pinduoduo.com/print/delivered-order");
 
 
 //        // 选择时间范围
@@ -43,7 +43,7 @@ public class ShowDeliveredPhoneHandler extends GenericSeleniumHandler {
         while (true) {
 
             // 查找未显示手机号的按钮
-            WebElement tbody = waitUtil(() -> webDriver.findElement(By.cssSelector("tbody[data-testid='beast-core-table-middle-tbody']")));
+            WebElement tbody = waitUtil(() -> driver.findElement(By.cssSelector("tbody[data-testid='beast-core-table-middle-tbody']")));
             retry(5, 5000, () -> {
                 List<WebElement> elements = waitUtil(() -> tbody.findElements(By.tagName("tr")));
                 if (elements == null || elements.isEmpty()) {
@@ -105,7 +105,7 @@ public class ShowDeliveredPhoneHandler extends GenericSeleniumHandler {
             sleepSeconds(1, 3);
 
             // 开始翻页
-            WebElement pageNext = webDriver.findElement(By.cssSelector("li[data-testid='beast-core-pagination-next']"));
+            WebElement pageNext = driver.findElement(By.cssSelector("li[data-testid='beast-core-pagination-next']"));
             if (pageNext == null || pageNext.getAttribute("class").contains("disabled")) {
                 break;
             }

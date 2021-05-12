@@ -15,26 +15,26 @@ import java.util.List;
  */
 public class LoginMmsHandler extends GenericSeleniumHandler {
     @Override
-    protected void doHandlerInternal(WebDriver webDriver, HandlerChain handlerChain) throws Exception {
+    protected void doHandlerInternal(WebDriver driver, HandlerChain handlerChain) throws Exception {
         // 打开登录页面
-        webDriver.get("https://mms.pinduoduo.com/login");
+        driver.get("https://mms.pinduoduo.com/login");
 
         // 切换到账户登录
-        waitUtil(() -> webDriver.findElement(By.cssSelector("div[class='tab-item last-item']"))).click();
+        waitUtil(() -> driver.findElement(By.cssSelector("div[class='tab-item last-item']"))).click();
 
         // 读取用户名密码
         List<String> userPass = Files.readAllLines(Paths.get("passwd"));
 
         // 输入账号密码
-        webDriver.findElement(By.id("usernameId")).sendKeys(userPass.get(0));
-        webDriver.findElement(By.id("passwordId")).sendKeys(userPass.get(1));
+        driver.findElement(By.id("usernameId")).sendKeys(userPass.get(0));
+        driver.findElement(By.id("passwordId")).sendKeys(userPass.get(1));
 
         sleepSeconds(0, 3);
         // 提交登录
-        webDriver.findElement(By.tagName("button")).click();
+        driver.findElement(By.tagName("button")).click();
 
         try {
-            WebElement webElement = waitUtil(() -> webDriver.findElement(By.cssSelector("div[data-testid='beast-core-input-suffix']")));
+            WebElement webElement = waitUtil(() -> driver.findElement(By.cssSelector("div[data-testid='beast-core-input-suffix']")));
             webElement.findElement(By.xpath("div/a/span")).click();
             Thread.sleep(60000);
         } catch (Exception e) {

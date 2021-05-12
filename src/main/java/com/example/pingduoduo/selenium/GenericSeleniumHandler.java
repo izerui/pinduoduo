@@ -16,13 +16,13 @@ public abstract class GenericSeleniumHandler implements Handler {
     private WebDriver webDriver;
 
     @Override
-    public final void doHandler(WebDriver webDriver, HandlerChain handlerChain) throws Exception {
-        this.webDriver = webDriver;
-        this.doHandlerInternal(webDriver, handlerChain);
-        handlerChain.doHandler(webDriver);
+    public final void doHandler(WebDriver driver, HandlerChain handlerChain) throws Exception {
+        this.webDriver = driver;
+        this.doHandlerInternal(driver, handlerChain);
+        handlerChain.doHandler(driver);
     }
 
-    protected abstract void doHandlerInternal(WebDriver webDriver, HandlerChain handlerChain) throws Exception;
+    protected abstract void doHandlerInternal(WebDriver driver, HandlerChain handlerChain) throws Exception;
 
     protected void retry(int attempts, int interval, RetryCall retryCall) throws Exception {
         RetryTemplate retryTemplate = RetryTemplate.builder()
