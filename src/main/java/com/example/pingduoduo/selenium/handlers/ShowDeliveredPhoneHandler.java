@@ -41,17 +41,14 @@ public class ShowDeliveredPhoneHandler extends GenericSeleniumHandler {
 
 
         while (true) {
-
             // 查找未显示手机号的按钮
-            WebElement tbody = waitUtil(() -> driver.findElement(By.cssSelector("tbody[data-testid='beast-core-table-middle-tbody']")));
+            WebElement tbody = findElement(driver, By.cssSelector("tbody[data-testid='beast-core-table-middle-tbody']"));
             retry(5, 5000, () -> {
-                List<WebElement> elements = waitUtil(() -> tbody.findElements(By.tagName("tr")));
+                List<WebElement> elements = findElements(tbody, By.tagName("tr"));
                 if (elements == null || elements.isEmpty()) {
                     throw new RuntimeException("没有数据");
                 }
-
                 List<LinkedHashMap<String, String>> dataList = new ArrayList<>();
-
                 // 开始点击显示手机号
                 for (int i = 0; i < elements.size(); i++) {
                     WebElement element = elements.get(i);
@@ -61,11 +58,11 @@ public class ShowDeliveredPhoneHandler extends GenericSeleniumHandler {
                         List<WebElement> tdList = element.findElements(By.tagName("td"));
                         if (tdList.size() > 3) {
                             WebElement td = tdList.get(3);
-                            String username = td.findElement(By.xpath("div/div")).getText();
+                            String username = findElement(td, By.xpath("div/div")).getText();
                             if (!username.equals("**")) { // ** 不触发点击
-                                waitUtil(() -> td.findElement(By.cssSelector("i[data-testid='beast-core-icon-lock']"))).click();
+                                waitUtil(() -> findElement(td, By.cssSelector("i[data-testid='beast-core-icon-lock']"))).click();
                                 Thread.sleep(3000);
-                                username = td.findElement(By.xpath("div/div")).getText();
+                                username = findElement(td, By.xpath("div/div")).getText();
                             }
                             log.info("获取到: 第" + rowNum + "行  " + username);
                             // 只有一个*的话,就触发点击
@@ -74,12 +71,12 @@ public class ShowDeliveredPhoneHandler extends GenericSeleniumHandler {
                             }
 
                             LinkedHashMap<String, String> map = new LinkedHashMap<>();
-                            map.put("订单号", tdList.get(1).findElement(By.xpath("div/span")).getText());
+                            map.put("订单号", findElement(tdList.get(1), By.xpath("div/span")).getText());
                             map.put("发货时间", tdList.get(2).getText());
-                            map.put("收件人", tdList.get(3).findElement(By.xpath("div/div")).getText());
-                            map.put("手机号", tdList.get(4).findElement(By.xpath("div/div")).getText());
+                            map.put("收件人", findElement(tdList.get(3), By.xpath("div/div")).getText());
+                            map.put("手机号", findElement(tdList.get(4), By.xpath("div/div")).getText());
                             map.put("省市区", tdList.get(5).getText());
-                            map.put("详细地址", tdList.get(6).findElement(By.xpath("div/div")).getText());
+                            map.put("详细地址", findElement(tdList.get(6), By.xpath("div/div")).getText());
                             map.put("商品名称", tdList.get(7).getText());
                             map.put("规格", tdList.get(8).getText());
                             map.put("sku编码", tdList.get(9).getText());
@@ -87,14 +84,12 @@ public class ShowDeliveredPhoneHandler extends GenericSeleniumHandler {
                             map.put("总价", tdList.get(11).getText());
                             map.put("支付金额", tdList.get(12).getText());
                             map.put("快递", tdList.get(13).getText());
-                            map.put("快递单号", StringUtils.replace(tdList.get(14).findElement(By.xpath("span")).getText(), "物流信息", ""));
+                            map.put("快递单号", StringUtils.replace(findElement(tdList.get(14), By.xpath("span")).getText(), "物流信息", ""));
                             map.put("备注", tdList.get(15).getText());
                             dataList.add(map);
                         }
                     });
-
                 }
-
                 // 生成一页保存一个xls
                 MapExporter export = new MapExporter("订单信息", dataList);
                 SXSSFWorkbook workbook = export.writeBook();
@@ -105,7 +100,7 @@ public class ShowDeliveredPhoneHandler extends GenericSeleniumHandler {
             sleepSeconds(1, 3);
 
             // 开始翻页
-            WebElement pageNext = driver.findElement(By.cssSelector("li[data-testid='beast-core-pagination-next']"));
+            WebElement pageNext = findElement(driver, By.cssSelector("li[data-testid='beast-core-pagination-next']"));
             if (pageNext == null || pageNext.getAttribute("class").contains("disabled")) {
                 break;
             }
