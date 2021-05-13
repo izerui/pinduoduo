@@ -1,6 +1,6 @@
-package com.example.pingduoduo;
+package com.example.pinduoduo;
 
-import com.example.pingduoduo.selenium.CustomerInfoEmulator;
+import com.example.pinduoduo.selenium.CustomerInfoEmulator;
 import org.junit.jupiter.api.Test;
 
 public class PingduoduoApplicationTests {

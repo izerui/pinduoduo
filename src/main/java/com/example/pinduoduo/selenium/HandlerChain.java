@@ -1,4 +1,4 @@
-package com.example.pingduoduo.selenium;
+package com.example.pinduoduo.selenium;
 
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;

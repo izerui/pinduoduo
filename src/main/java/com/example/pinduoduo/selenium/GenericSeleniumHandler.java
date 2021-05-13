@@ -1,4 +1,4 @@
-package com.example.pingduoduo.selenium;
+package com.example.pinduoduo.selenium;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomUtils;
@@ -6,6 +6,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.springframework.retry.support.RetryTemplate;
+import org.springframework.util.Assert;
 
 import java.time.Clock;
 import java.time.Duration;
@@ -16,11 +17,8 @@ import java.util.concurrent.Callable;
 @Slf4j
 public abstract class GenericSeleniumHandler implements Handler {
 
-    private WebDriver webDriver;
-
     @Override
     public final void doHandler(WebDriver driver, HandlerChain handlerChain) throws Exception {
-        this.webDriver = driver;
         this.doHandlerInternal(driver, handlerChain);
         handlerChain.doHandler(driver);
     }
@@ -44,35 +42,43 @@ public abstract class GenericSeleniumHandler implements Handler {
         });
     }
 
-    protected WebElement findElement(WebDriver driver, By by) {
+    protected void waitUtilGet(WebDriver driver, String url) {
+        driver.get(url);
+        waitUtil(() -> {
+            Assert.state(driver.getCurrentUrl().equals(url), "正在加载页面...");
+            return driver.getCurrentUrl();
+        });
+    }
+
+    protected WebElement waitUtilElement(WebDriver driver, By by) {
         return waitUtil(() -> driver.findElement(by));
     }
 
-    protected WebElement findElement(WebDriver driver, By by, int waitSeconds) {
+    protected WebElement waitUtilElement(WebDriver driver, By by, int waitSeconds) {
         return waitUtil(waitSeconds, () -> driver.findElement(by));
     }
 
-    protected WebElement findElement(WebElement element, By by) {
+    protected WebElement waitUtilElement(WebElement element, By by) {
         return waitUtil(() -> element.findElement(by));
     }
 
-    protected WebElement findElement(WebElement element, By by, int waitSeconds) {
+    protected WebElement waitUtilElement(WebElement element, By by, int waitSeconds) {
         return waitUtil(waitSeconds, () -> element.findElement(by));
     }
 
-    protected List<WebElement> findElements(WebDriver driver, By by) {
+    protected List<WebElement> waitUtilElements(WebDriver driver, By by) {
         return waitUtil(() -> driver.findElements(by));
     }
 
-    protected List<WebElement> findElements(WebDriver driver, By by, int waitSeconds) {
+    protected List<WebElement> waitUtilElements(WebDriver driver, By by, int waitSeconds) {
         return waitUtil(waitSeconds, () -> driver.findElements(by));
     }
 
-    protected List<WebElement> findElements(WebElement element, By by) {
+    protected List<WebElement> waitUtilElements(WebElement element, By by) {
         return waitUtil(() -> element.findElements(by));
     }
 
-    protected List<WebElement> findElements(WebElement element, By by, int waitSeconds) {
+    protected List<WebElement> waitUtilElements(WebElement element, By by, int waitSeconds) {
         return waitUtil(waitSeconds, () -> element.findElements(by));
     }
 

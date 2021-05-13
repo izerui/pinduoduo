@@ -1,4 +1,4 @@
-package com.example.pingduoduo.utils;
+package com.example.pinduoduo.utils;
 
 import okhttp3.*;
 import org.slf4j.Logger;

@@ -1,4 +1,4 @@
-package com.example.pingduoduo.selenium;
+package com.example.pinduoduo.selenium;
 
 import org.openqa.selenium.WebDriver;
 

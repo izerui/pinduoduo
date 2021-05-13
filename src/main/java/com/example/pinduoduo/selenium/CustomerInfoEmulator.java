@@ -1,7 +1,7 @@
-package com.example.pingduoduo.selenium;
+package com.example.pinduoduo.selenium;
 
-import com.example.pingduoduo.selenium.handlers.LoginMmsHandler;
-import com.example.pingduoduo.selenium.handlers.ShowDeliveredPhoneHandler;
+import com.example.pinduoduo.selenium.handlers.LoginMmsHandler;
+import com.example.pinduoduo.selenium.handlers.ShowDeliveredPhoneHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -20,7 +20,7 @@ public class CustomerInfoEmulator {
 //        options.setProxy(proxy);
         WebDriver driver = new ChromeDriver(options);
 
-        log.info("开始获取客户信息");
+        log.info("开始获取订单信息");
         HandlerChain handlerChain = new HandlerChain();
         handlerChain.addHandler(new LoginMmsHandler());
         handlerChain.addHandler(new ShowDeliveredPhoneHandler());

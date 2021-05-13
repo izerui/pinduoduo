@@ -1,4 +1,4 @@
-package com.example.pingduoduo.utils;
+package com.example.pinduoduo.utils;
 
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
