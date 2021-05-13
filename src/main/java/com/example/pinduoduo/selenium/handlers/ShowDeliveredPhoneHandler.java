@@ -49,7 +49,6 @@ public class ShowDeliveredPhoneHandler extends GenericSeleniumHandler {
                 if (elements == null || elements.isEmpty()) {
                     throw new RuntimeException("没有数据");
                 }
-                List<LinkedHashMap<String, String>> dataList = new ArrayList<>();
                 // 开始点击显示手机号
                 for (int i = 0; i < elements.size(); i++) {
                     WebElement element = elements.get(i);
@@ -60,6 +59,7 @@ public class ShowDeliveredPhoneHandler extends GenericSeleniumHandler {
                             WebElement td = tdList.get(3);
                             String orderNo = waitUtilElement(tdList.get(1), By.xpath("div/span")).getText();
                             if (orderService.existsByOrderNo(orderNo)) {
+                                log.info("序号{} 订单号: {} 已存在", rowNum, orderNo);
                                 return;
                             }
                             sleepSeconds(3, 5);
@@ -108,7 +108,7 @@ public class ShowDeliveredPhoneHandler extends GenericSeleniumHandler {
             // 开始翻页
             WebElement pageNext = waitUtilElement(driver, By.cssSelector("li[data-testid='beast-core-pagination-next']"));
             if (pageNext == null || pageNext.getAttribute("class").contains("disabled")) {
-                break;
+                return;
             }
             pageNext.click();
         }

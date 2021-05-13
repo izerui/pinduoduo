@@ -22,8 +22,8 @@ public class OrderService {
     private OrderInfoDao orderInfoDao;
 
 
-    public List<OrderInfo> listOrderInfos() {
-        return orderInfoDao.findAll();
+    public List<OrderInfo> findEffectives() {
+        return orderInfoDao.findEffectives();
     }
 
     public boolean existsByOrderNo(String orderNo) {

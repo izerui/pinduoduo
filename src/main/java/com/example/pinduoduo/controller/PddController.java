@@ -36,7 +36,7 @@ public class PddController {
     @ApiOperation("导出订单数据")
     @PostMapping("/export")
     public ResponseEntity<byte[]> exportOrderInfoList() throws Exception {
-        List<OrderInfo> orderInfos = orderService.listOrderInfos();
+        List<OrderInfo> orderInfos = orderService.findEffectives();
         List<LinkedHashMap<String, String>> collect = orderInfos.stream().map(orderInfo -> {
             LinkedHashMap<String, String> linkedHashMap = new LinkedHashMap<>();
             for (Field field : orderInfo.getClass().getDeclaredFields()) {
