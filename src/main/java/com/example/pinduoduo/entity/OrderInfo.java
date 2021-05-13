@@ -37,13 +37,13 @@ public class OrderInfo {
     @Description("规格")
     private String productSpec;
 
-    @Description("SKU编码")
+    @Description("sku编码")
     private String sku;
 
     @Description("商品数量")
     private Integer num;
 
-    @Description("总金额")
+    @Description("总价")
     private BigDecimal totalAmount;
 
     @Description("支付金额")
