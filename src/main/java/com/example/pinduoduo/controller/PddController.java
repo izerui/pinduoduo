@@ -9,6 +9,8 @@ import com.example.pinduoduo.utils.MapExporter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -35,8 +37,9 @@ public class PddController {
 
     @ApiOperation("导出订单数据")
     @PostMapping("/export")
-    public ResponseEntity<byte[]> exportOrderInfoList() throws Exception {
-        List<OrderInfo> orderInfos = orderService.findEffectives();
+    public ResponseEntity<byte[]> exportOrderInfoList(@RequestParam("startDate") String startDate) throws Exception {
+        DateTime dateTime = DateTime.parse(startDate, DateTimeFormat.forPattern("yyyy-MM-dd"));
+        List<OrderInfo> orderInfos = orderService.findVaildBySendDate(dateTime.withTimeAtStartOfDay().toDate());
         List<LinkedHashMap<String, String>> collect = orderInfos.stream().map(orderInfo -> {
             LinkedHashMap<String, String> linkedHashMap = new LinkedHashMap<>();
             for (Field field : orderInfo.getClass().getDeclaredFields()) {
@@ -57,7 +60,7 @@ public class PddController {
 
         byte[] bytes = outputStream.toByteArray();
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentDispositionFormData("attachment", URLEncoder.encode("订单信息", "UTF-8") + ".xlsx");
+        headers.setContentDispositionFormData("attachment", DateTime.now().toString("yyyy-MM-dd") + ".xlsx");
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         headers.setContentLength(bytes.length);
         return new ResponseEntity<byte[]>(bytes, headers, HttpStatus.CREATED);

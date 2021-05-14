@@ -7,13 +7,13 @@ import com.example.pinduoduo.service.OrderService;
 import com.example.pinduoduo.utils.SpringHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -78,7 +78,7 @@ public class ShowDeliveredPhoneHandler extends GenericSeleniumHandler {
 
                             OrderInfo orderInfo = new OrderInfo();
                             orderInfo.setOrderNo(orderNo);
-                            orderInfo.setSendTime(tdList.get(2).getText());
+                            orderInfo.setSendTime(DateTime.parse(tdList.get(2).getText(), DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate());
                             orderInfo.setReceiver(waitUtilElement(tdList.get(3), By.xpath("div/div")).getText());
                             orderInfo.setPhone(waitUtilElement(tdList.get(4), By.xpath("div/div")).getText());
                             orderInfo.setCity(tdList.get(5).getText());

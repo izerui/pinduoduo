@@ -15,7 +15,7 @@ public class PingduoduoApplication implements WebMvcConfigurer {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addRedirectViewController("/", "/swagger-ui/");
+        registry.addRedirectViewController("/", "/doc.html");
     }
 
     @Bean

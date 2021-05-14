@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -22,8 +23,8 @@ public class OrderService {
     private OrderInfoDao orderInfoDao;
 
 
-    public List<OrderInfo> findEffectives() {
-        return orderInfoDao.findEffectives();
+    public List<OrderInfo> findVaildBySendDate(Date startDate) {
+        return orderInfoDao.findVaildBySendDate(startDate);
     }
 
     public boolean existsByOrderNo(String orderNo) {
