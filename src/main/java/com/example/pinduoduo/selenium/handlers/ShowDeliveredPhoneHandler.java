@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
@@ -57,8 +58,10 @@ public class ShowDeliveredPhoneHandler extends GenericSeleniumHandler {
                         List<WebElement> tdList = element.findElements(By.tagName("td"));
                         if (tdList.size() > 3) {
                             WebElement td = tdList.get(3);
-                            String orderNo = waitUtilElement(tdList.get(1), By.xpath("div/span")).getText();
+                            WebElement orderNoWebElement = waitUtilElement(tdList.get(1), By.xpath("div/span"));
+                            String orderNo = orderNoWebElement.getText();
                             if (orderService.existsByOrderNo(orderNo)) {
+                                ((JavascriptExecutor) driver).executeScript("arguments[0].text='已存在,忽略!';", orderNoWebElement);
                                 log.info("序号{} 订单号: {} 已存在", rowNum, orderNo);
                                 return;
                             }
@@ -103,14 +106,13 @@ public class ShowDeliveredPhoneHandler extends GenericSeleniumHandler {
 //                workbook.close();
             });
 
-            sleepSeconds(1, 3);
-
             // 开始翻页
             WebElement pageNext = waitUtilElement(driver, By.cssSelector("li[data-testid='beast-core-pagination-next']"));
             if (pageNext == null || pageNext.getAttribute("class").contains("disabled")) {
                 return;
             }
             pageNext.click();
+            Thread.sleep(2000);
         }
 
 

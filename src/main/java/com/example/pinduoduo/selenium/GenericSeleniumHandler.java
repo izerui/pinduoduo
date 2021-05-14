@@ -7,7 +7,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.util.Assert;
+import org.springframework.util.ReflectionUtils;
 
+import java.lang.reflect.Field;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
@@ -35,7 +37,7 @@ public abstract class GenericSeleniumHandler implements Handler {
             try {
                 retryCall.doWithRetry();
             } catch (Exception ex) {
-                log.error(ex.getMessage());
+                log.error(getThrowDetailMessage(ex));
                 throw ex;
             }
             return null;
@@ -98,7 +100,6 @@ public abstract class GenericSeleniumHandler implements Handler {
                     return value;
                 }
             } catch (Exception e) {
-                log.error(e.getMessage());
             }
 
             if (endTime.isBefore(clock.instant())) {
@@ -112,9 +113,20 @@ public abstract class GenericSeleniumHandler implements Handler {
                 throw new RuntimeException(e);
             }
         }
-        String timeoutMessage = String.format("Expected condition failed: (tried for %d second(s) with %d milliseconds interval)", timeout.getSeconds(), interval.toMillis());
-        log.error(timeoutMessage);
         return null;
+    }
+
+    private String getThrowDetailMessage(Throwable throwable) {
+        try {
+            Field detailMessage = ReflectionUtils.findField(throwable.getClass(), "detailMessage");
+            if (detailMessage != null) {
+                detailMessage.setAccessible(true);
+                return (String) detailMessage.get(throwable);
+            }
+            return throwable.getMessage();
+        } catch (Exception de) {
+            return throwable.getMessage();
+        }
     }
 
     protected void sleepSeconds(int start, int end) throws InterruptedException {

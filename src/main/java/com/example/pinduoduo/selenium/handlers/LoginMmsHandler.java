@@ -34,7 +34,7 @@ public class LoginMmsHandler extends GenericSeleniumHandler {
         waitUtilElement(driver, By.tagName("button")).click();
 
         // 是否已经登录到home页
-        waitUtil(() -> {
+        waitUtil(3, () -> {
             if (driver.getCurrentUrl().equals("https://mms.pinduoduo.com/home")) {
                 return driver.getCurrentUrl();
             }
