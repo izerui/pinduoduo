@@ -22,6 +22,20 @@ public class OrderService {
     @Autowired
     private OrderInfoDao orderInfoDao;
 
+    public List<OrderInfo> selectOrderInfoReports(String dataSourceName, String dataSetName, Map<String, Object> params) {
+        String receiver = (String) params.get("receiver");
+        String sendDate = (String) params.get("sendDate");
+        if (receiver != null && sendDate != null) {
+            return orderInfoDao.findOrders(receiver, sendDate);
+        } else if (receiver != null) {
+            return orderInfoDao.findByReceiver(receiver);
+        } else if (sendDate != null) {
+            return orderInfoDao.findBySendDate(sendDate);
+        } else {
+            return orderInfoDao.findByVaild();
+        }
+    }
+
 
     public List<OrderInfo> findVaildBySendDate(Date startDate) {
         return orderInfoDao.findVaildBySendDate(startDate);

@@ -17,6 +17,9 @@ public class OrderInfo {
     @Column(unique = true, nullable = false, updatable = false)
     private String orderNo;
 
+    @Description("发货日期")
+    private String sendDate;
+
     @Description("发货时间")
     private Date sendTime;
 

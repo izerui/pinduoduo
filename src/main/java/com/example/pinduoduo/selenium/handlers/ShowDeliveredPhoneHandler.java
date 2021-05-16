@@ -84,7 +84,9 @@ public class ShowDeliveredPhoneHandler extends GenericSeleniumHandler {
 
                             OrderInfo orderInfo = new OrderInfo();
                             orderInfo.setOrderNo(orderNo);
-                            orderInfo.setSendTime(DateTime.parse(tdList.get(2).getText(), DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate());
+                            DateTime sendDateTime = DateTime.parse(tdList.get(2).getText(), DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss"));
+                            orderInfo.setSendDate(sendDateTime.toString("yyyy-MM-dd"));
+                            orderInfo.setSendTime(sendDateTime.toDate());
                             orderInfo.setReceiver(waitUtilElement(tdList.get(3), By.xpath("div/div")).getText());
                             orderInfo.setPhone(waitUtilElement(tdList.get(4), By.xpath("div/div")).getText());
                             orderInfo.setCity(tdList.get(5).getText());
