@@ -1,5 +1,6 @@
 package com.example.pinduoduo;
 
+import com.example.pinduoduo.configuretion.GlobalExceptionHandler;
 import com.example.pinduoduo.utils.SpringHolder;
 import com.google.gson.Gson;
 import org.springframework.boot.SpringApplication;

@@ -58,7 +58,7 @@ public class MapExporter {
 
     public SXSSFWorkbook writeBook() {
         //header
-        Assert.notEmpty(dataList);
+        Assert.notEmpty(dataList, "数据列表不能为空");
         Row headRow = sh.createRow(0);
         for (int i = 0; i < dataList.size(); i++) {
             Row row = sh.createRow(i + 1);
