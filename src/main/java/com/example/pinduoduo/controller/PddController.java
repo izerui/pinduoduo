@@ -22,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Field;
-import java.net.URLEncoder;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,8 +35,8 @@ public class PddController {
     private OrderService orderService;
 
     @ApiOperation("导出订单数据")
-    @PostMapping("/export")
-    public ResponseEntity<byte[]> exportOrderInfoList(@RequestParam("startDate") String startDate) throws Exception {
+    @GetMapping("/export/{startDate}")
+    public ResponseEntity<byte[]> exportOrderInfoList(@PathVariable("startDate") String startDate) throws Exception {
         DateTime dateTime = DateTime.parse(startDate, DateTimeFormat.forPattern("yyyy-MM-dd"));
         List<OrderInfo> orderInfos = orderService.findVaildBySendDate(dateTime.withTimeAtStartOfDay().toDate());
         List<LinkedHashMap<String, String>> collect = orderInfos.stream().map(orderInfo -> {
@@ -60,7 +59,7 @@ public class PddController {
 
         byte[] bytes = outputStream.toByteArray();
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentDispositionFormData("attachment", DateTime.now().toString("yyyy-MM-dd") + ".xlsx");
+        headers.setContentDispositionFormData("attachment", startDate + ".xlsx");
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         headers.setContentLength(bytes.length);
         return new ResponseEntity<byte[]>(bytes, headers, HttpStatus.CREATED);

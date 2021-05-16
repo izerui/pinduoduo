@@ -29,6 +29,7 @@ public class HandlerChain {
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
         } finally {
+            log.info("handlers complected!!");
             driver.quit();
         }
     }

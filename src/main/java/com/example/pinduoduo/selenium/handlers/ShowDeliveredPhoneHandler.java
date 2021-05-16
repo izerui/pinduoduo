@@ -41,8 +41,9 @@ public class ShowDeliveredPhoneHandler extends GenericSeleniumHandler {
         // 人工介入选择时间
         Thread.sleep(20000);
 
-
+        int page = 1;
         while (true) {
+            log.info("开始爬取第" + page + "页");
             // 查找未显示手机号的按钮
             WebElement tbody = waitUtilElement(driver, By.cssSelector("tbody[data-testid='beast-core-table-middle-tbody']"));
             retry(5, 5000, () -> {
@@ -61,7 +62,9 @@ public class ShowDeliveredPhoneHandler extends GenericSeleniumHandler {
                             WebElement orderNoWebElement = waitUtilElement(tdList.get(1), By.xpath("div/span"));
                             String orderNo = orderNoWebElement.getText();
                             if (orderService.existsByOrderNo(orderNo)) {
-                                ((JavascriptExecutor) driver).executeScript("arguments[0].text='已存在,忽略!';", orderNoWebElement);
+//                                String existNotify = String.format("序号%s 订单号: %s 已存在", rowNum, orderNo);
+//                                WebElement notifyEl = waitUtilElement(driver, By.cssSelector("div[data-testid='beast-core-noticeBar']")).findElement(By.xpath("div/div/div"));
+//                                ((JavascriptExecutor) driver).executeScript("arguments[0].setAttribute('innerHTML', '" + existNotify + "');", notifyEl);
                                 log.info("序号{} 订单号: {} 已存在", rowNum, orderNo);
                                 return;
                             }
@@ -113,6 +116,7 @@ public class ShowDeliveredPhoneHandler extends GenericSeleniumHandler {
             }
             pageNext.click();
             Thread.sleep(2000);
+            page++;
         }
 
 
