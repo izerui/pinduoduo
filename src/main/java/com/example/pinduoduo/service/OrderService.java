@@ -26,9 +26,9 @@ public class OrderService {
         String receiver = (String) params.get("receiver");
         String sendDate = (String) params.get("sendDate");
         if (receiver != null && sendDate != null) {
-            return orderInfoDao.findOrders(receiver, sendDate);
+            return orderInfoDao.findOrders("%" + receiver + "%", sendDate);
         } else if (receiver != null) {
-            return orderInfoDao.findByReceiver(receiver);
+            return orderInfoDao.findByReceiver("%" + receiver + "%");
         } else if (sendDate != null) {
             return orderInfoDao.findBySendDate(sendDate);
         } else {
