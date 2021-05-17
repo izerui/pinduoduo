@@ -1,4 +1,4 @@
-package com.example.pinduoduo.configuretion;
+package com.example.pinduoduo.ureport;
 
 import com.bstek.ureport.definition.datasource.BuildinDatasource;
 import org.springframework.beans.factory.annotation.Autowired;

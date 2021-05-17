@@ -22,7 +22,7 @@ public class OrderService {
     @Autowired
     private OrderInfoDao orderInfoDao;
 
-    public List<OrderInfo> selectOrderInfoReports(String dataSourceName, String dataSetName, Map<String, Object> params) {
+    public List<OrderInfo> selectOrderInfoReports(Map<String, Object> params) {
         String receiver = (String) params.get("receiver");
         String sendDate = (String) params.get("sendDate");
         if (receiver != null && sendDate != null) {
