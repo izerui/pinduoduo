@@ -5,6 +5,7 @@ import com.example.pinduoduo.entity.OrderInfo;
 import com.example.pinduoduo.support.Description;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +22,8 @@ public class OrderService {
 
     @Autowired
     private OrderInfoDao orderInfoDao;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     public List<OrderInfo> selectOrderInfoReports(Map<String, Object> params) {
         String receiver = (String) params.get("receiver");
@@ -84,5 +87,10 @@ public class OrderService {
             }
         }
         return count;
+    }
+
+    public List<Map<String, Object>> findMapBySQL(String sql) {
+        List<Map<String, Object>> maps = jdbcTemplate.queryForList(sql);
+        return maps;
     }
 }

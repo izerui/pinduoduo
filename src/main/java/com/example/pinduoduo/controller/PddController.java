@@ -25,6 +25,7 @@ import java.lang.reflect.Field;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Api(tags = "导出拼多多订单信息")
@@ -60,6 +61,32 @@ public class PddController {
         byte[] bytes = outputStream.toByteArray();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentDispositionFormData("attachment", startDate + ".xlsx");
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentLength(bytes.length);
+        return new ResponseEntity<byte[]>(bytes, headers, HttpStatus.CREATED);
+    }
+
+
+    @ApiOperation("根据sql导出数据")
+    @GetMapping("/export/sql")
+    public ResponseEntity<byte[]> exportBySQL(String sql) throws Exception {
+        List<Map<String,Object>> list = orderService.findMapBySQL(sql);
+        List<LinkedHashMap<String,String>> collect = list.stream().map(stringObjectMap -> {
+            LinkedHashMap<String,String> map = new LinkedHashMap<>();
+            stringObjectMap.forEach((o, o2) -> {
+                map.put(o,String.valueOf(o2));
+            });
+            return map;
+        }).collect(Collectors.toList());
+        MapExporter export = new MapExporter("订单信息", collect);
+        SXSSFWorkbook workbook = export.writeBook();
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        workbook.write(outputStream);
+        workbook.close();
+
+        byte[] bytes = outputStream.toByteArray();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentDispositionFormData("attachment", "order_info_sql.xlsx");
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         headers.setContentLength(bytes.length);
         return new ResponseEntity<byte[]>(bytes, headers, HttpStatus.CREATED);
