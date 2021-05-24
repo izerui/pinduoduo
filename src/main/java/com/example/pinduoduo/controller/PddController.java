@@ -25,7 +25,6 @@ import java.lang.reflect.Field;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Api(tags = "导出拼多多订单信息")
@@ -70,11 +69,11 @@ public class PddController {
     @ApiOperation("根据sql导出数据")
     @GetMapping("/export/sql")
     public ResponseEntity<byte[]> exportBySQL(String sql) throws Exception {
-        List<Map<String,Object>> list = orderService.findMapBySQL(sql);
-        List<LinkedHashMap<String,String>> collect = list.stream().map(stringObjectMap -> {
-            LinkedHashMap<String,String> map = new LinkedHashMap<>();
+        List<Map<String, Object>> list = orderService.findMapBySQL(sql);
+        List<LinkedHashMap<String, String>> collect = list.stream().map(stringObjectMap -> {
+            LinkedHashMap<String, String> map = new LinkedHashMap<>();
             stringObjectMap.forEach((o, o2) -> {
-                map.put(o,String.valueOf(o2));
+                map.put(o, String.valueOf(o2));
             });
             return map;
         }).collect(Collectors.toList());
@@ -90,6 +89,14 @@ public class PddController {
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         headers.setContentLength(bytes.length);
         return new ResponseEntity<byte[]>(bytes, headers, HttpStatus.CREATED);
+    }
+
+
+    @ApiOperation("导出重复数据")
+    @GetMapping("/export/repeat")
+    public ResponseEntity<byte[]> exportRepeat() throws Exception {
+        String sql = "SELECT receiver '收件人',phone '手机号',city '省市区',address '地址',count(0) '购买次数',SUM(pay_amount) '合计支付金额' from order_info where receiver <> '**' GROUP BY receiver HAVING count(0) > 1";
+        return exportBySQL(sql);
     }
 
 
