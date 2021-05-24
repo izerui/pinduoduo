@@ -10,7 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
@@ -71,7 +70,10 @@ public class ShowDeliveredPhoneHandler extends GenericSeleniumHandler {
                             sleepSeconds(3, 5);
                             String username = waitUtilElement(td, By.xpath("div/div")).getText();
                             if (username.contains("*") && !username.equals("**")) { // 排除 ** 之外的触发点击
-                                waitUtil(() -> waitUtilElement(td, By.cssSelector("i[data-testid='beast-core-icon-lock']"))).click();
+                                WebElement webElement = waitUtil(() -> waitUtilElement(td, By.cssSelector("i[data-testid='beast-core-icon-lock']")));
+                                if (webElement != null) {
+                                    webElement.click();
+                                }
                                 Thread.sleep(2000);
                                 username = waitUtilElement(td, By.xpath("div/div")).getText();
                             }
