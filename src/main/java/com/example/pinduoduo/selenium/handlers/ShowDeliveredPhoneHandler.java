@@ -38,7 +38,7 @@ public class ShowDeliveredPhoneHandler extends GenericSeleniumHandler {
 
 
         // 人工介入选择时间
-        Thread.sleep(20000);
+//        Thread.sleep(20000);
 
         int page = 1;
         while (true) {
@@ -80,7 +80,7 @@ public class ShowDeliveredPhoneHandler extends GenericSeleniumHandler {
                             log.info("获取到: 第" + rowNum + "行  " + username);
 
                             // 只有一个*的话,就触发重试点击
-                            if (!username.equals("**") && username.contains("*")) {
+                            if (!username.equals("**") && !username.contains("****") && username.contains("*")) {
                                 throw new RuntimeException("重试..." + username);
                             }
 
