@@ -38,7 +38,7 @@ public class ShowDeliveredPhoneHandler extends GenericSeleniumHandler {
 
 
         // 人工介入选择时间
-//        Thread.sleep(20000);
+        Thread.sleep(5000);
 
         int page = 1;
         while (true) {
