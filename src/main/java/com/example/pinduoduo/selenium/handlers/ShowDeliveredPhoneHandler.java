@@ -54,7 +54,7 @@ public class ShowDeliveredPhoneHandler extends GenericSeleniumHandler {
                 for (int i = 0; i < elements.size(); i++) {
                     WebElement element = elements.get(i);
                     final int rowNum = i + 1;
-                    retry(5, 5000, () -> {
+                    retry(5, 180000, () -> {
                         List<WebElement> tdList = element.findElements(By.tagName("td"));
                         if (tdList.size() > 3) {
                             WebElement td = tdList.get(3);
