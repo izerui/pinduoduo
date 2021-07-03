@@ -5,6 +5,7 @@ import com.example.pinduoduo.selenium.GenericSeleniumHandler;
 import com.example.pinduoduo.selenium.HandlerChain;
 import com.example.pinduoduo.service.OrderService;
 import com.example.pinduoduo.utils.SpringHolder;
+import com.example.pinduoduo.utils.StringRandomUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -12,6 +13,8 @@ import org.joda.time.format.DateTimeFormat;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.remote.RemoteWebElement;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -21,6 +24,7 @@ import java.util.List;
  */
 @Slf4j
 public class ShowDeliveredPhoneHandler extends GenericSeleniumHandler {
+
     @Override
     protected void doHandlerInternal(WebDriver driver, HandlerChain handlerChain) throws Exception {
         OrderService orderService = SpringHolder.getBean(OrderService.class);
@@ -45,7 +49,7 @@ public class ShowDeliveredPhoneHandler extends GenericSeleniumHandler {
             log.info("开始爬取第" + page + "页");
             // 查找未显示手机号的按钮
             WebElement tbody = waitUtilElement(driver, By.cssSelector("tbody[data-testid='beast-core-table-middle-tbody']"));
-            retry(5, 5000, () -> {
+            retry(10, 5000, () -> {
                 List<WebElement> elements = waitUtilElements(tbody, By.tagName("tr"));
                 if (elements == null || elements.isEmpty()) {
                     throw new RuntimeException("没有数据");
@@ -54,7 +58,7 @@ public class ShowDeliveredPhoneHandler extends GenericSeleniumHandler {
                 for (int i = 0; i < elements.size(); i++) {
                     WebElement element = elements.get(i);
                     final int rowNum = i + 1;
-                    retry(5, 180000, () -> {
+                    retry(10, 5000, () -> {
                         List<WebElement> tdList = element.findElements(By.tagName("td"));
                         if (tdList.size() > 3) {
                             WebElement td = tdList.get(3);
@@ -67,21 +71,69 @@ public class ShowDeliveredPhoneHandler extends GenericSeleniumHandler {
                                 log.info("序号{} 订单号: {} 已存在", rowNum, orderNo);
                                 return;
                             }
-                            sleepSeconds(3, 5);
                             String username = waitUtilElement(td, By.xpath("div/div")).getText();
                             if (username.contains("*") && !username.equals("**")) { // 排除 ** 之外的触发点击
+                                Thread.sleep(5000);
                                 WebElement webElement = waitUtil(() -> waitUtilElement(td, By.cssSelector("i[data-testid='beast-core-icon-lock']")));
                                 if (webElement != null) {
                                     webElement.click();
                                 }
-                                Thread.sleep(2000);
+                                Thread.sleep(1000);
                                 username = waitUtilElement(td, By.xpath("div/div")).getText();
                             }
-                            log.info("获取到: 第" + rowNum + "行  " + username);
+                            log.info("---> 正在获取: 第" + rowNum + "行  " + username);
 
                             // 只有一个*的话,就触发重试点击
                             if (!username.equals("**") && !username.contains("****") && username.contains("*")) {
                                 throw new RuntimeException("重试..." + username);
+                            }
+
+                            String phoneNo = waitUtilElement(tdList.get(4), By.xpath("div/div")).getText();
+                            List<WebElement> divList = ((RemoteWebElement) tdList.get(4)).findElementsByXPath("div");
+                            if (phoneNo.contains("#") && divList != null && divList.size() > 1) {
+                                try {
+                                    WebElement cancelDialog = waitUtilElement(driver, By.cssSelector("button[data-testid='beast-core-modal-close-button']"));
+                                    if (cancelDialog != null) {
+                                        cancelDialog.click();
+                                        Thread.sleep(1000);
+                                    }
+                                } catch (Exception e) {
+                                    ;
+                                }
+                                Actions actionProvider = new Actions(driver);
+                                // Performs mouse move action onto the element
+                                actionProvider.moveToElement(divList.get(1)).build().perform();
+                                // 点击号码保护 弹出报备弹框
+                                WebElement formElement = waitUtilElement(driver, By.cssSelector("div[data-testid='beast-core-portal-main']"));
+                                formElement.click();
+                                WebElement haomabaohuButton = waitUtilElements(formElement, By.xpath("div/div/div/div/div/div")).get(1);
+                                WebElement span = waitUtilElement(haomabaohuButton, By.tagName("span"));
+                                Thread.sleep(1000);
+                                span.click();
+
+                                // 消除号码保护提示框
+                                waitUtilElement(driver, By.cssSelector("div[data-testid='beast-core-modal-inner']")).click();
+
+                                // 开始报备
+                                Thread.sleep(1000);
+                                List<WebElement> baobeiyuanyin = waitUtilElements(driver, By.cssSelector("label[data-testid='beast-core-radio']"));
+                                // 选择线下手动发货
+                                WebElement xianxiafahuoRadio = baobeiyuanyin.get(1);
+                                Thread.sleep(1000);
+                                xianxiafahuoRadio.click();
+                                // 填入随机字符
+                                Thread.sleep(1000);
+                                WebElement textInput = waitUtilElement(driver, By.cssSelector("textarea[data-testid='beast-core-textArea-htmlInput']"));
+                                textInput.sendKeys(StringRandomUtils.getRandomJianHan());
+                                // 提交报备
+                                Thread.sleep(6000);
+                                waitUtilElement(driver, By.cssSelector("button[data-testid='beast-core-modal-ok-button']")).click();
+                                Thread.sleep(1000);
+                                String warn = waitUtilElement(driver, By.cssSelector("div[data-testid='beast-core-toast']")).getText();
+                                if (StringUtils.contains(warn, "操作过于频繁")) {
+                                    waitUtilElement(driver, By.cssSelector("button[data-testid='beast-core-modal-close-button']")).click();
+                                    Thread.sleep(5000);
+                                }
                             }
 
                             OrderInfo orderInfo = new OrderInfo();
@@ -91,6 +143,9 @@ public class ShowDeliveredPhoneHandler extends GenericSeleniumHandler {
                             orderInfo.setSendTime(sendDateTime.toDate());
                             orderInfo.setReceiver(waitUtilElement(tdList.get(3), By.xpath("div/div")).getText());
                             orderInfo.setPhone(waitUtilElement(tdList.get(4), By.xpath("div/div")).getText());
+                            if (orderInfo.getPhone().contains("#")) {
+                                throw new RuntimeException("假号码,重新获取");
+                            }
                             orderInfo.setCity(tdList.get(5).getText());
                             orderInfo.setAddress(waitUtilElement(tdList.get(6), By.xpath("div/div")).getText());
                             orderInfo.setProductName(tdList.get(7).getText());
@@ -103,6 +158,7 @@ public class ShowDeliveredPhoneHandler extends GenericSeleniumHandler {
                             orderInfo.setCourierNo(StringUtils.replace(waitUtilElement(tdList.get(14), By.xpath("span")).getText(), "物流信息", ""));
                             orderInfo.setRemark(tdList.get(15).getText());
                             orderService.saveOrderInfo(orderInfo);
+                            log.info("<--- 获取成功: 第" + rowNum + "行  " + username);
                         }
                     });
                 }

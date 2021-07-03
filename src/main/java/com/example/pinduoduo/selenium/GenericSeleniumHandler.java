@@ -37,7 +37,7 @@ public abstract class GenericSeleniumHandler implements Handler {
             try {
                 retryCall.doWithRetry();
             } catch (Exception ex) {
-                log.error(getThrowDetailMessage(ex));
+                log.error(getThrowDetailMessage(ex), ex);
                 throw ex;
             }
             return null;
