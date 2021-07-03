@@ -14,7 +14,7 @@ public class StringRandomUtils {
      */
     public static String getRandomJianHan() {
         String ret = "";
-        for (int i = 0; i < RandomUtils.nextInt(20, 100); i++) {
+        for (int i = 0; i < RandomUtils.nextInt(50, 100); i++) {
             String str = null;
             int hightPos, lowPos; // 定义高低位
             Random random = new Random();
