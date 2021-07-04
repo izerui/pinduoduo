@@ -25,6 +25,8 @@ import java.util.List;
 @Slf4j
 public class ShowDeliveredPhoneHandler extends GenericSeleniumHandler {
 
+    private boolean realPhoneNo = false;
+
     @Override
     protected void doHandlerInternal(WebDriver driver, HandlerChain handlerChain) throws Exception {
         OrderService orderService = SpringHolder.getBean(OrderService.class);
@@ -87,7 +89,7 @@ public class ShowDeliveredPhoneHandler extends GenericSeleniumHandler {
                             username = waitUtilElement(td, By.xpath("div/div")).getText();
                             phoneNo = waitUtilElement(tdList.get(4), By.xpath("div/div")).getText();
 
-                            if (phoneNo.contains("#")) {
+                            if (phoneNo.contains("#") && realPhoneNo) {
                                 try {
                                     WebElement cancelDialog = driver.findElement(By.cssSelector("button[data-testid='beast-core-modal-close-button']"));
                                     if (cancelDialog != null) {
@@ -128,6 +130,9 @@ public class ShowDeliveredPhoneHandler extends GenericSeleniumHandler {
                                 waitUtilElement(driver, By.cssSelector("button[data-testid='beast-core-modal-ok-button']")).click();
                                 Thread.sleep(1000);
                                 phoneNo = waitUtilElement(tdList.get(4), By.xpath("div/div")).getText();
+                                if (phoneNo.contains("#")) {
+                                    throw new RuntimeException("未获取到真实手机号,重新获取...");
+                                }
                             }
 
                             OrderInfo orderInfo = new OrderInfo();
@@ -137,9 +142,6 @@ public class ShowDeliveredPhoneHandler extends GenericSeleniumHandler {
                             orderInfo.setSendTime(sendDateTime.toDate());
                             orderInfo.setReceiver(waitUtilElement(tdList.get(3), By.xpath("div/div")).getText());
                             orderInfo.setPhone(phoneNo);
-                            if (orderInfo.getPhone().contains("#")) {
-                                throw new RuntimeException("未获取到真实手机号,重新获取...");
-                            }
                             orderInfo.setCity(tdList.get(5).getText());
                             orderInfo.setAddress(waitUtilElement(tdList.get(6), By.xpath("div/div")).getText());
                             orderInfo.setProductName(tdList.get(7).getText());
